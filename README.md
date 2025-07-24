@@ -6,4 +6,5 @@ Plans:
 
 0. Malloc/realloc simulation;
 1. Memory cleaner (free func);
-2. ...
+2. Separate memory allocation logic from main file;
+3. ...

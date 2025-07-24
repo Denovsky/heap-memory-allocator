@@ -4,6 +4,12 @@
 #define MAX_HEAP_SIZE 1024
 #define MAX_HEAP_TABLE_SIZE MAX_HEAP_SIZE / 8
 
+// struct allocator_unit
+// {
+//     uint8_t size;
+//     uint8_t *header;
+// };
+
 uint8_t compareStr(char *, char *);
 void outputStr(char *);
 
@@ -11,38 +17,14 @@ uint8_t heap_area[MAX_HEAP_SIZE];
 uint8_t heap_memory_allocation_table[MAX_HEAP_TABLE_SIZE] = {0};
 uint8_t heap_top = 0;
 uint8_t error = 0;
-void *malloc(size_t);
-void *realloc(void *, size_t);
+
+void *malloc(uint8_t);
+void *realloc(void *, uint8_t);
 void free(void *);
 
 int main()
 {
-    // uint16_t array_size = 10;
-    // uint16_t index = 0;
-    // unsigned char *array = malloc(array_size);
-    // char DR;
-    // while (DR != '\n')
-    // {
-    //     if (index >= array_size)
-    //     {
-    //         array_size += 10;
-    //         array = realloc(array, array_size);
-    //         printf("Resize");
-    //     }
-    //     scanf("%c", &DR); // Data Register
-    //     *(array + index) = DR;
-    //     printf("%d\n", DR);
-    //     index++;
-    // }
-    // outputStr(array);
-    // char *str1 = "Some";
-    // printf("%d", compareStr(array, str1));
-
     uint8_t *ptr_top = malloc(10);
-    // for (uint8_t i = 0; i < 3; i++)
-    // {
-    //     printf("%d ", heap_memory_allocation_table[i]);
-    // }
     uint8_t *next_test_ptr = malloc(12);
     for (uint8_t i = 0; i < 4; i++)
     {
@@ -51,15 +33,17 @@ int main()
     return 0;
 }
 
-void *malloc(size_t size)
+void *malloc(uint8_t size)
 {
     if (heap_top >= MAX_HEAP_SIZE - 1 || heap_top + size >= MAX_HEAP_SIZE - 1 || size == 0)
     {
         return NULL;
     }
+    // struct allocator_unit unit;
 
-    void *ptr = &heap_area[heap_top];
-    size_t temp_size = size;
+    uint8_t *header = &heap_area[heap_top];
+    void *ptr = &heap_area[heap_top + 1];
+    size_t temp_size = size + 1;
     int8_t current_table_unit = 0;
     int8_t offset = 7;
     uint8_t table_unit = 0;
@@ -75,13 +59,15 @@ void *malloc(size_t size)
             if (((table_unit >> offset) & 1))
             {
                 ptr = NULL;
-                temp_size = size;
+                header = NULL;
+                temp_size = size + 1;
             }
             else
             {
-                if (ptr == NULL)
+                if (ptr == NULL && temp_size == size)
                 {
-                    ptr = &heap_area[current_table_unit * 8 + (7 - offset)];
+                    header = &heap_area[current_table_unit * 8 + (7 - offset)];
+                    ptr = &heap_area[current_table_unit * 8 + (7 - offset) + 1];
                 }
                 temp_size--;
             }
@@ -98,8 +84,10 @@ void *malloc(size_t size)
         }
         current_table_unit++;
     }
-    temp_size = size;
-
+    temp_size = size + 1;
+    if (ptr == NULL)
+        return NULL;
+    (*header) = size;
     // printf("\n");
     // printf("%d - cur\n", current_table_unit);
 
@@ -126,7 +114,7 @@ void *malloc(size_t size)
     return ptr;
 }
 
-void *realloc(void *, size_t)
+void *realloc(void *, uint8_t)
 {
 }
 
