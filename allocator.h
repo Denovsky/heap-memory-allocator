@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ALLOCATOR_H
+#define ALLOCATOR_H
 
 #include <stddef.h>
 #include <stdint.h>
@@ -16,3 +17,5 @@ void *malloc_(size_t);
 void free_(void *);
 void *realloc_(void *, size_t);
 void memset_(void *, uint8_t, size_t);
+
+#endif

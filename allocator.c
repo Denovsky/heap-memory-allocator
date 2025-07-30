@@ -1,4 +1,4 @@
-#include <allocator.h>
+#include "allocator.h"
 
 uint8_t heap[MAX_HEAP_SIZE];
 size_t heap_top = 0;
@@ -20,6 +20,7 @@ header_t *create_block(size_t data_size)
 void *malloc_(size_t data_size)
 {
     void *data_section = NULL;
+    heap_top = 0;
     if (first_block == NULL)
     {
         first_block = (header_t *)create_block(data_size);
@@ -28,25 +29,26 @@ void *malloc_(size_t data_size)
     else
     {
         header_t *temp_block = first_block;
-        heap_top = sizeof(header_t) + temp_block->data_size;
         while (temp_block->next)
         {
             size_t diff = (uintptr_t)temp_block->next - ((uintptr_t)temp_block + sizeof(header_t) + temp_block->data_size);
             if (diff >= data_size + sizeof(header_t))
             {
+                heap_top += sizeof(header_t) + temp_block->data_size;
                 data_section = ((uint8_t *)create_block(data_size) + sizeof(header_t));
                 return data_section;
             }
             else
             {
-                heap_top += sizeof(header_t) + (temp_block->next)->data_size + diff; // offset heap_top point on top of the next block
+                heap_top += sizeof(header_t) + temp_block->data_size + diff; // offset heap_top point on top of the next block
                 temp_block = temp_block->next;
             }
         }
 
         if (heap_top + sizeof(header_t) + data_size > MAX_HEAP_SIZE)
-            return data_section;
+            return NULL;
 
+        heap_top += sizeof(header_t) + temp_block->data_size;
         data_section = ((uint8_t *)create_block(data_size) + sizeof(header_t));
     }
     return data_section;
@@ -55,21 +57,21 @@ void *malloc_(size_t data_size)
 void *realloc_(void *ptr, size_t block_size)
 {
     if (ptr == NULL)
-        return my_malloc(block_size);
+        return malloc_(block_size);
     void *new_ptr = NULL;
 
     header_t *current_block = (header_t *)((uint8_t *)ptr - sizeof(header_t));
 
-    if ((uintptr_t)current_block->next - (uintptr_t)ptr < block_size)
+    if (!current_block->next || (uintptr_t)current_block->next - (uintptr_t)ptr < block_size)
     {
-        new_ptr = my_malloc(block_size);
+        new_ptr = malloc_(block_size);
         if (new_ptr)
         {
             for (size_t i = 0; i < current_block->data_size && i < block_size; i++)
             {
                 *((uint8_t *)new_ptr + i) = *((uint8_t *)ptr + i);
             }
-            my_free(ptr);
+            free_(ptr);
             return new_ptr;
         }
         return NULL;
@@ -85,8 +87,10 @@ void free_(void *ptr)
         first_block = current_block->next;
     header_t *prev_block = current_block->prev;
     header_t *next_block = current_block->next;
-    prev_block->next = next_block;
-    next_block->prev = prev_block;
+    if (prev_block)
+        prev_block->next = next_block;
+    if (next_block)
+        next_block->prev = prev_block;
     memset_(current_block, 0, current_block->data_size + sizeof(header_t));
 }
 
