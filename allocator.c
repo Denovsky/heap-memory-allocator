@@ -62,7 +62,7 @@ void *realloc_(void *ptr, size_t block_size)
 
     header_t *current_block = (header_t *)((uint8_t *)ptr - sizeof(header_t));
 
-    if (!current_block->next || (uintptr_t)current_block->next - (uintptr_t)ptr < block_size)
+    if (current_block->next || (uintptr_t)current_block->next - (uintptr_t)ptr < block_size)
     {
         new_ptr = malloc_(block_size);
         if (new_ptr)
