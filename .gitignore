@@ -1,2 +1,4 @@
 *.out
-./main.c
+*.txt
+main
+main.c
