@@ -1,4 +1,3 @@
-*.out
-*.txt
-main
-main.c
+/*.out
+/*.txt
+/main
