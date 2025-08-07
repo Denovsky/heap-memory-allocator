@@ -2,7 +2,7 @@
 
 Just a myself-writen test memory allocator for education purpose.
 
-Status: 85% completed. Main logic is done (malloc, realloc, free, memset).
+Status: 90% completed. Main logic is done (malloc, realloc, free, memset).
 
 Plans:
 
