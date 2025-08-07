@@ -4,24 +4,51 @@
 char *receive_input();
 char *getMainCommand(char *);
 char *getSubCommand(char *);
-uint8_t compareStr(char *, char *);
+uint8_t compareStr(const char *, char *);
 void outputStr(char *, char);
+
+void led_handler();
+void help_handler();
+
+typedef struct map
+{
+    const char *key;
+    void (*handler)(/*char **args, int argc*/); // add (char **args, int argc) logic later
+} map_t;
+
+map_t cmds[] = {
+    {"led", led_handler},
+    {"help", help_handler}};
 
 int main()
 {
-
-    char *commands_list[] = {"led", "help"};
-    // char input[] = "led on";
     char *input = receive_input();
-    outputStr(input, '\0');
+    // char input[] = "led on";
     char *main_command = getMainCommand(input);
-    outputStr(main_command, '\0');
     char *sub_command = getSubCommand(input);
-    outputStr(sub_command, '\0');
 
-    printf("%d\n", compareStr(commands_list[0], main_command));
+    for (uint8_t i = 0; i < sizeof(cmds) / (sizeof(const char *) + sizeof(void (*)(char **))); i++)
+    {
+
+        if (compareStr(cmds[i].key, main_command))
+        {
+            cmds[i].handler();
+        }
+    }
+
     return 0;
 } // Test phrase: Somebody once told me that world is gonna rule me
+
+void led_handler()
+{
+    const char *led_params[] = {"on", "off"};
+    printf("led\n");
+}
+
+void help_handler()
+{
+    printf("help\n");
+}
 
 char *getSubCommand(char *input)
 {
@@ -114,7 +141,7 @@ char *receive_input()
     return RX_data_buffer;
 }
 
-uint8_t compareStr(char *command_ptr, char *input_ptr)
+uint8_t compareStr(const char *command_ptr, char *input_ptr)
 {
     uint16_t index = 0;
     uint8_t command_symbol = *command_ptr;
