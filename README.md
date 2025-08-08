@@ -18,10 +18,10 @@ Plans:
 
 Command line and command processing.
 
-Status: in work. Main logic of command validation and processing is done. Must be completed main commands logic.
+Status: in work. Main logic of receive command validation and command processing is done. Must be completed main commands logic.
 
 1. ~~Receive/Transmit symbols logic;~~
-2. ~~Command validation;~~
+2. ~~Receive command validation;~~
 3. ~~Commands handler;~~
 4.   Commands processing;
 5.   Separate logic and make encapsulation;
