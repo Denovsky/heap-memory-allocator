@@ -1,6 +1,13 @@
 {
     "files.associations": {
         "string.h": "c",
-        "allocator.h": "c"
+        "allocator.h": "c",
+        "algorithm": "c",
+        "memory": "c",
+        "random": "c",
+        "iosfwd": "c",
+        "numeric": "c",
+        "ostream": "c",
+        "streambuf": "c"
     }
 }
