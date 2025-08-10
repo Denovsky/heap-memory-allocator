@@ -24,5 +24,5 @@ Status: in work. Main logic of receive command validation and command processing
 2. ~~Receive command validation;~~
 3. ~~Commands handler;~~
 4.   Commands processing;
-5.   Separate logic and make encapsulation;
+5. ~~Separate logic and make encapsulation;~~
 6.   ...

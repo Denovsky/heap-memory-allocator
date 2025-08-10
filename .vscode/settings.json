@@ -8,6 +8,8 @@
         "iosfwd": "c",
         "numeric": "c",
         "ostream": "c",
-        "streambuf": "c"
+        "streambuf": "c",
+        "cmdhandler.h": "c",
+        "stdio.h": "c"
     }
 }
