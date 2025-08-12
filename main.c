@@ -16,27 +16,24 @@ map_t cmds[] = {
 int main()
 {
     uint8_t cmds_size = sizeof(cmds) / (sizeof(const char *) + sizeof(void (*)(char **)));
-    while (1)
-    {
-        char *input = RXData();
-        // char input[] = "led on";
-        char *main_command = getMainCommand(input);
-        char *sub_command = getSubCommand(input);
+    char *input = RXData();
+    // char input[] = "led on";
+    char *main_command = getMainCommand(input);
+    char *sub_command = getSubCommand(input);
 
-        uint8_t isWork = 0;
-        for (uint8_t i = 0; i < cmds_size; i++)
+    uint8_t isWork = 0;
+    for (uint8_t i = 0; i < cmds_size; i++)
+    {
+        if (compareStr(cmds[i].key, main_command))
         {
-            if (compareStr(cmds[i].key, main_command))
-            {
-                char *args[] = {"", &cmds_size, sub_command};
-                isWork = 1;
-                cmds[i].handler(args);
-            }
+            char *args[] = {"", &cmds_size, sub_command};
+            isWork = 1;
+            cmds[i].handler(args);
         }
-        if (!isWork)
-        {
-            TXData("No such command");
-        }
+    }
+    if (!isWork)
+    {
+        TXData("No such command");
     }
     return 0;
 } // Test phrase: Somebody once told me that world is gonna rule me

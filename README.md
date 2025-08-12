@@ -16,7 +16,7 @@ Plans:
 8.   ...
 
 
-Command line and command processing.
+Command line and command processing. Architect of data receive mechanism based on NVIC (Nested Vectored Interrupt Controller), means that RXData func calls command handler by '\n' symbol.
 
 Status: in work. Main logic of receive command validation and command processing is done. Must be completed main commands logic.
 
@@ -25,4 +25,5 @@ Status: in work. Main logic of receive command validation and command processing
 3. ~~Commands handler;~~
 4.   Commands processing;
 5. ~~Separate logic and make encapsulation;~~
-6.   ...
+6.   Rewrite RXData func architect;
+7.   ...
